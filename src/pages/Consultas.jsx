@@ -11,12 +11,12 @@ export default function Consultas() {
   })
 
   // ===============================
-  // FORMATAR DATA (SEM BUG)
+  // FORMATAR DATA (SEM FUSO / SEM BUG)
   // ===============================
   function formatarData(data) {
-    return new Date(data).toLocaleDateString('pt-BR', {
-      timeZone: 'America/Sao_Paulo'
-    })
+    if (!data) return ''
+    const [ano, mes, dia] = data.split('-')
+    return `${dia}/${mes}/${ano}`
   }
 
   // ===============================
