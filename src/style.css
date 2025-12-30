@@ -1,100 +1,57 @@
-/* ======================
-   NAVBAR BASE
-====================== */
-.navbar {
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8;
+}
+/* =========================
+   NAVBAR
+========================= */
+nav {
   background: #1f2937;
   padding: 12px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  position: relative;
+  gap: 16px;
 }
 
-.logo {
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-/* ======================
-   MENU DESKTOP
-====================== */
-.nav-menu {
-  display: flex;
-  gap: 12px;
-}
-
-.nav-menu button {
-  background: #3b82f6;
+nav button {
+  background: transparent;
   border: none;
-  color: white;
-  padding: 8px 14px;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
+  transition: background 0.2s;
 }
 
-.nav-menu button.danger {
+nav button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+nav button:last-child {
+  margin-left: auto;
   background: #dc2626;
+  color: #fff;
 }
 
-/* ======================
-   HAMBURGER
-====================== */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.hamburger span {
-  width: 22px;
-  height: 2px;
-  background: #fff;
-  transition: 0.3s;
-}
-
-/* animação X */
-.hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-.hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-}
-
-/* ======================
-   MOBILE
-====================== */
+/* MOBILE */
 @media (max-width: 768px) {
-
-  .hamburger {
-    display: flex;
+  nav {
+    flex-wrap: wrap;
   }
 
-  .nav-menu {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: #1f2937;
-    flex-direction: column;
-    gap: 10px;
-    padding: 15px;
-    display: none;
-  }
-
-  .nav-menu.open {
-    display: flex;
-  }
-
-  .nav-menu button {
+  nav button {
     width: 100%;
     text-align: left;
   }
+
+  nav button:last-child {
+    margin-left: 0;
+  }
+}
+
+.container { padding: 20px; }
+@media (max-width: 768px) {
+  nav { flex-direction: column; }
 }
