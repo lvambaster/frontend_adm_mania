@@ -42,7 +42,7 @@ form input {
   border-radius: 8px;
   border: 1px solid #d1d5db;
   font-size: 0.95rem;
-  transition: border 0.2s, box-shadow 0.2s;
+  box-sizing: border-box; /* reforço */
 }
 
 form input:focus {
