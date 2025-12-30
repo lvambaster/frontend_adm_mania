@@ -16,7 +16,7 @@ body {
 
 /* LOGO */
 .logo {
-  height: 48px; /* mais visível no desktop */
+  height: 62px; /* mais visível no desktop */
   object-fit: contain;
 }
 
@@ -55,7 +55,7 @@ body {
 ========================= */
 @media (max-width: 768px) {
   .logo {
-    height: 42px; /* logo maior no mobile */
+    height: 62px; /* logo maior no mobile */
   }
 
   .hamburger {
