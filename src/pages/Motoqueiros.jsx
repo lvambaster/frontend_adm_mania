@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from '../api/api'
 import '../styles/motoqueiros.css'
 
 export default function Motoqueiros() {
@@ -12,19 +12,10 @@ export default function Motoqueiros() {
     senha: ''
   })
 
-  const token = localStorage.getItem('token')
-
-  const headers = {
-    Authorization: `Bearer ${token}`
-  }
-
   // 🔹 LISTAR
   async function carregar() {
     try {
-      const res = await axios.get(
-        'http://localhost:3000/motoqueiros',
-        { headers }
-      )
+      const res = await api.get('/motoqueiros')
       setLista(res.data)
     } catch (err) {
       console.error(err)
@@ -42,21 +33,12 @@ export default function Motoqueiros() {
 
     try {
       if (editando) {
-        // remove senha vazia
         const dados = { ...form }
         if (!dados.senha) delete dados.senha
 
-        await axios.put(
-          `http://localhost:3000/motoqueiros/${editando.id}`,
-          dados,
-          { headers }
-        )
+        await api.put(`/motoqueiros/${editando.id}`, dados)
       } else {
-        await axios.post(
-          'http://localhost:3000/motoqueiros',
-          form,
-          { headers }
-        )
+        await api.post('/motoqueiros', form)
       }
 
       limpar()
@@ -83,10 +65,7 @@ export default function Motoqueiros() {
     if (!confirm('Deseja excluir este motoqueiro?')) return
 
     try {
-      await axios.delete(
-        `http://localhost:3000/motoqueiros/${id}`,
-        { headers }
-      )
+      await api.delete(`/motoqueiros/${id}`)
       carregar()
     } catch (err) {
       console.error(err)
