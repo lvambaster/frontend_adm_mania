@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from '../api/api'
 import '../styles/consultas.css'
 
 export default function Consultas() {
@@ -10,46 +10,65 @@ export default function Consultas() {
     data: ''
   })
 
-  const token = localStorage.getItem('token')
-   const headers = {
-  Authorization: `Bearer ${token}`
-}
+  // ===============================
+  // FORMATAR DATA (SEM BUG)
+  // ===============================
+  function formatarData(data) {
+    return new Date(data).toLocaleDateString('pt-BR', {
+      timeZone: 'America/Sao_Paulo'
+    })
+  }
 
-
+  // ===============================
+  // CARREGAR MOTOQUEIROS
+  // ===============================
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/motoqueiros', { headers })
+    api.get('/motoqueiros')
       .then(res => setMotoqueiros(res.data))
       .catch(() => setMotoqueiros([]))
   }, [])
 
-  function consultar(e) {
+  // ===============================
+  // CONSULTAR TOTAIS
+  // ===============================
+  async function consultar(e) {
     e.preventDefault()
 
-    axios
-      .get('http://localhost:3000/totais', {
-        headers,
+    try {
+      const res = await api.get('/totais', {
         params: {
           motoqueiroId: filtro.motoqueiroId || undefined,
           data: filtro.data || undefined
         }
       })
-      .then(res => setResultados(res.data))
-      .catch(() => setResultados([]))
+
+      setResultados(res.data)
+    } catch {
+      setResultados([])
+    }
   }
 
-  function marcarComoPago(id) {
-    axios
-      .put(`http://localhost:3000/totais/${id}/pagar`, {}, { headers })
-      .then(() => {
-        setResultados(prev =>
-          prev.map(r =>
-            r.id === id ? { ...r, pago: true } : r
-          )
+  // ===============================
+  // MARCAR COMO PAGO
+  // ===============================
+  async function marcarComoPago(id) {
+    try {
+      await api.put(`/totais/${id}/pagar`)
+
+      setResultados(prev =>
+        prev.map(r =>
+          r.id === id ? { ...r, pago: true } : r
         )
-      })
+      )
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao marcar como pago')
+    }
   }
 
+  // ===============================
+  // TOTAL GERAL
+  // ===============================
   const totalGeral = resultados.reduce(
     (soma, r) => soma + Number(r.total || 0),
     0
@@ -57,6 +76,8 @@ export default function Consultas() {
 
   return (
     <div className="consultas-container">
+
+      {/* FILTROS */}
       <div className="card">
         <h2>Consulta de Totais</h2>
 
@@ -87,6 +108,7 @@ export default function Consultas() {
         </form>
       </div>
 
+      {/* RESULTADOS */}
       <div className="card">
         <h2>Resultados</h2>
 
@@ -102,9 +124,7 @@ export default function Consultas() {
             >
               <div>
                 <strong>{r.Motoqueiro?.nome}</strong>
-                <span>
-                  {new Date(r.data).toLocaleDateString()}
-                </span>
+                <span>Data: {formatarData(r.data)}</span>
               </div>
 
               <div className="total">
@@ -131,6 +151,7 @@ export default function Consultas() {
           </div>
         )}
       </div>
+
     </div>
   )
 }
