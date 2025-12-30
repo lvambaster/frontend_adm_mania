@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './navbar.css'
+import 'frontend_adm_mania/src/style.css'
 
 export default function Navbar({ setPage }) {
   const [open, setOpen] = useState(false)
