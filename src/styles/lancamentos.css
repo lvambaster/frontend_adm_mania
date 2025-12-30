@@ -1,0 +1,96 @@
+.lancamentos-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  margin-bottom: 15px;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.form input,
+.form select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+}
+
+button.secondary {
+  background: #6b7280;
+}
+
+button.danger {
+  background: #dc2626;
+}
+
+.filtro {
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.info small {
+  display: block;
+  font-size: 0.85em;
+  color: #374151;
+}
+
+.botoes {
+  display: flex;
+  gap: 8px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  .item {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .botoes {
+    justify-content: flex-end;
+  }
+}
