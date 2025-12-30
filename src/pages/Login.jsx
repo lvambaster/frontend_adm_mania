@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import axios from 'axios'
+import api from '../api/api'
 import '../styles/login.css'
 import logo from '../assets/logo.png'
-
 
 export default function Login() {
   const [login, setLogin] = useState('')
@@ -14,7 +13,7 @@ export default function Login() {
     setErro('')
 
     try {
-      const res = await axios.post('http://localhost:3000/login', {
+      const res = await api.post('/login', {
         login,
         senha
       })
