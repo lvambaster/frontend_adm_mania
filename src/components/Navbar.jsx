@@ -1,32 +1,43 @@
 import { useState } from 'react'
+import '../style.css'
 
 export default function Navbar({ setPage }) {
-  const [aberto, setAberto] = useState(false)
-
-  function ir(pagina) {
-    setPage(pagina)
-    setAberto(false)
-  }
+  const [open, setOpen] = useState(false)
 
   return (
-    <header className="navbar">
-      <div className="navbar-top">
-        <span className="logo">Mania</span>
-
+    <nav className="navbar">
+      {/* ESQUERDA: LOGO + HAMBURGUER */}
+      <div className="nav-left">
         <button
-          className="hamburguer"
-          onClick={() => setAberto(!aberto)}
+          className="hamburger"
+          onClick={() => setOpen(!open)}
         >
           ☰
         </button>
+
+        <img
+          src="/logo.png"
+          alt="Logo"
+          className="logo"
+        />
       </div>
 
-      <nav className={`menu ${aberto ? 'aberto' : ''}`}>
-        <button onClick={() => ir('motoqueiros')}>Motoqueiros</button>
-        <button onClick={() => ir('lancamentos')}>Lançamentos</button>
-        <button onClick={() => ir('consultas')}>Consultas</button>
+      {/* MENU */}
+      <div className={`nav-menu ${open ? 'open' : ''}`}>
+        <button onClick={() => { setPage('motoqueiros'); setOpen(false) }}>
+          Motoqueiros
+        </button>
+
+        <button onClick={() => { setPage('lancamentos'); setOpen(false) }}>
+          Lançamentos
+        </button>
+
+        <button onClick={() => { setPage('consultas'); setOpen(false) }}>
+          Consultas
+        </button>
+
         <button
-          className="sair"
+          className="logout"
           onClick={() => {
             localStorage.clear()
             location.reload()
@@ -34,7 +45,7 @@ export default function Navbar({ setPage }) {
         >
           Sair
         </button>
-      </nav>
-    </header>
+      </div>
+    </nav>
   )
 }

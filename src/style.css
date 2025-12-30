@@ -4,82 +4,89 @@ body {
   background: #f4f6f8;
 }
 /* =========================
-   NAVBAR + HAMBURGUER
+   NAVBAR
 ========================= */
 .navbar {
   background: #1f2937;
   padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.navbar-top {
+/* LOGO + HAMBURGUER */
+.nav-left {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 .logo {
-  color: white;
-  font-weight: bold;
-  font-size: 1.1rem;
+  height: 38px;
+  object-fit: contain;
 }
 
-.hamburguer {
+/* BOTÃO HAMBURGUER */
+.hamburger {
+  display: none;
   background: none;
   border: none;
-  font-size: 1.6rem;
+  font-size: 26px;
   color: white;
   cursor: pointer;
-  display: none;
 }
 
 /* MENU */
-.menu {
+.nav-menu {
   display: flex;
-  gap: 16px;
-  margin-top: 12px;
+  gap: 12px;
 }
 
-.menu button {
-  background: transparent;
+.nav-menu button {
+  background: #3b82f6;
   border: none;
-  color: #e5e7eb;
-  padding: 8px 12px;
+  color: white;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: 500;
 }
 
-.menu button:hover {
-  background: rgba(255,255,255,0.1);
-}
-
-.menu .sair {
+.nav-menu button.logout {
   background: #dc2626;
-  color: white;
 }
 
 /* =========================
-   MOBILE
+   RESPONSIVO
 ========================= */
 @media (max-width: 768px) {
-  .hamburguer {
+  .hamburger {
     display: block;
   }
 
-  .menu {
-    display: none;
+  .nav-menu {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: #1f2937;
     flex-direction: column;
-    gap: 8px;
+    padding: 16px;
+    display: none;
+    gap: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
   }
 
-  .menu.aberto {
+  .nav-menu.open {
     display: flex;
   }
 
-  .menu button {
+  .nav-menu button {
     width: 100%;
     text-align: left;
   }
 }
+
 
 
 .container { padding: 20px; }
