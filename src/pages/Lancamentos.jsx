@@ -21,12 +21,12 @@ export default function Lancamentos() {
   })
 
   // ===============================
-  // FORMATAR DATA (SEM BUG DE FUSO)
+  // FORMATAR DATA (SEM FUSO / SEM BUG)
   // ===============================
   function formatarData(data) {
-    return new Date(data).toLocaleDateString('pt-BR', {
-      timeZone: 'America/Sao_Paulo'
-    })
+    if (!data) return ''
+    const [ano, mes, dia] = data.split('-')
+    return `${dia}/${mes}/${ano}`
   }
 
   // ===============================
@@ -39,14 +39,14 @@ export default function Lancamentos() {
   }, [])
 
   // ===============================
-  // SALVAR / EDITAR (FIX DATA)
+  // SALVAR / EDITAR (DATEONLY)
   // ===============================
   async function salvar(e) {
     e.preventDefault()
 
     const payload = {
       ...form,
-      data: `${form.data}T12:00:00`, // ✅ FIX DEFINITIVO
+      data: form.data, // ✅ SEM HORA
       diaria: Number(form.diaria),
       taxa: Number(form.taxa),
       qtd_entregas: Number(form.qtd_entregas),
@@ -62,7 +62,7 @@ export default function Lancamentos() {
       }
 
       limpar()
-      consultar() // atualiza lista
+      consultar()
     } catch (err) {
       console.error(err)
       alert('Erro ao salvar lançamento')
@@ -70,7 +70,7 @@ export default function Lancamentos() {
   }
 
   // ===============================
-  // CONSULTA BETWEEN
+  // CONSULTA POR PERÍODO
   // ===============================
   async function consultar() {
     if (!dataInicio || !dataFim) return
@@ -79,8 +79,7 @@ export default function Lancamentos() {
       const res = await api.get('/lancamentos')
 
       const filtrados = res.data.filter(l => {
-        const d = l.data.slice(0, 10)
-        return d >= dataInicio && d <= dataFim
+        return l.data >= dataInicio && l.data <= dataFim
       })
 
       setResultado(filtrados)
@@ -97,7 +96,7 @@ export default function Lancamentos() {
     setEditando(l)
     setForm({
       MotoqueiroId: l.MotoqueiroId,
-      data: l.data.slice(0, 10),
+      data: l.data,
       diaria: l.diaria,
       taxa: l.taxa,
       qtd_entregas: l.qtd_entregas,
