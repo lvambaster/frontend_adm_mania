@@ -21,6 +21,7 @@ export default function Login() {
       localStorage.setItem('token', res.data.token)
       window.location.href = '/'
     } catch (err) {
+      console.error(err)
       setErro('Login ou senha inválidos')
     }
   }
