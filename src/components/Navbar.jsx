@@ -7,20 +7,21 @@ export default function Navbar({ setPage }) {
   return (
     <nav className="navbar">
       {/* ESQUERDA: LOGO + HAMBURGUER */}
-      <div className="nav-left">
-        <button
-          className="hamburger"
-          onClick={() => setOpen(!open)}
-        >
-          ☰
-        </button>
+  <div className="nav-left">
+  <img
+    src="/logo.png"
+    alt="Logo"
+    className="logo"
+  />
+</div>
 
-        <img
-          src="/logo.png"
-          alt="Logo"
-          className="logo"
-        />
-      </div>
+<button
+  className="hamburger"
+  onClick={() => setOpen(!open)}
+>
+  ☰
+</button>
+
 
       {/* MENU */}
       <div className={`nav-menu ${open ? 'open' : ''}`}>
