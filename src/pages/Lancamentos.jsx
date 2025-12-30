@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import api from '../api/api'
 import '../styles/lancamentos.css'
 
 export default function Lancamentos() {
@@ -20,26 +20,28 @@ export default function Lancamentos() {
     vales: ''
   })
 
-  const token = localStorage.getItem('token')
-  const headers = { Authorization: `Bearer ${token}` }
-
   // ===============================
-  // FORMATAR DATA (SEM BUG)
+  // FORMATAR DATA (SEM BUG DE FUSO)
   // ===============================
   function formatarData(data) {
-    const d = new Date(data)
-    return d.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+    return new Date(data).toLocaleDateString('pt-BR', {
+      timeZone: 'America/Sao_Paulo'
+    })
   }
 
+  // ===============================
+  // CARREGAR MOTOQUEIROS
+  // ===============================
   useEffect(() => {
-    axios.get('http://localhost:3000/motoqueiros', { headers })
+    api.get('/motoqueiros')
       .then(res => setMotoqueiros(res.data))
+      .catch(err => console.error(err))
   }, [])
 
   // ===============================
   // SALVAR / EDITAR (FIX DATA)
   // ===============================
-  function salvar(e) {
+  async function salvar(e) {
     e.preventDefault()
 
     const payload = {
@@ -52,39 +54,45 @@ export default function Lancamentos() {
       vales: Number(form.vales)
     }
 
-    if (editando) {
-      axios.put(
-        `http://localhost:3000/lancamentos/${editando.id}`,
-        payload,
-        { headers }
-      )
-    } else {
-      axios.post(
-        'http://localhost:3000/lancamentos',
-        payload,
-        { headers }
-      )
-    }
+    try {
+      if (editando) {
+        await api.put(`/lancamentos/${editando.id}`, payload)
+      } else {
+        await api.post('/lancamentos', payload)
+      }
 
-    limpar()
+      limpar()
+      consultar() // atualiza lista
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao salvar lançamento')
+    }
   }
 
   // ===============================
   // CONSULTA BETWEEN
   // ===============================
-  function consultar() {
+  async function consultar() {
     if (!dataInicio || !dataFim) return
 
-    axios.get('http://localhost:3000/lancamentos', { headers })
-      .then(res => {
-        const filtrados = res.data.filter(l => {
-          const d = l.data.slice(0, 10)
-          return d >= dataInicio && d <= dataFim
-        })
-        setResultado(filtrados)
+    try {
+      const res = await api.get('/lancamentos')
+
+      const filtrados = res.data.filter(l => {
+        const d = l.data.slice(0, 10)
+        return d >= dataInicio && d <= dataFim
       })
+
+      setResultado(filtrados)
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao consultar lançamentos')
+    }
   }
 
+  // ===============================
+  // EDITAR
+  // ===============================
   function editar(l) {
     setEditando(l)
     setForm({
@@ -98,10 +106,18 @@ export default function Lancamentos() {
     })
   }
 
-  function excluir(id) {
-    if (confirm('Deseja excluir este lançamento?')) {
-      axios.delete(`http://localhost:3000/lancamentos/${id}`, { headers })
-        .then(consultar)
+  // ===============================
+  // EXCLUIR
+  // ===============================
+  async function excluir(id) {
+    if (!confirm('Deseja excluir este lançamento?')) return
+
+    try {
+      await api.delete(`/lancamentos/${id}`)
+      consultar()
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao excluir lançamento')
     }
   }
 
@@ -127,7 +143,9 @@ export default function Lancamentos() {
 
         <form onSubmit={salvar} className="form">
 
-          <select required value={form.MotoqueiroId}
+          <select
+            required
+            value={form.MotoqueiroId}
             onChange={e => setForm({ ...form, MotoqueiroId: e.target.value })}
           >
             <option value="">Selecione o Motoqueiro</option>
@@ -136,32 +154,44 @@ export default function Lancamentos() {
             ))}
           </select>
 
-          <input type="date" required
+          <input
+            type="date"
+            required
             value={form.data}
             onChange={e => setForm({ ...form, data: e.target.value })}
           />
 
-          <input type="number" placeholder="Diária"
+          <input
+            type="number"
+            placeholder="Diária"
             value={form.diaria}
             onChange={e => setForm({ ...form, diaria: e.target.value })}
           />
 
-          <input type="number" placeholder="Taxa"
+          <input
+            type="number"
+            placeholder="Taxa"
             value={form.taxa}
             onChange={e => setForm({ ...form, taxa: e.target.value })}
           />
 
-          <input type="number" placeholder="Qtd Entregas"
+          <input
+            type="number"
+            placeholder="Qtd Entregas"
             value={form.qtd_entregas}
             onChange={e => setForm({ ...form, qtd_entregas: e.target.value })}
           />
 
-          <input type="number" placeholder="Qtd Taxas > 10"
+          <input
+            type="number"
+            placeholder="Qtd Taxas > 10"
             value={form.qtd_taxas_acima_10}
             onChange={e => setForm({ ...form, qtd_taxas_acima_10: e.target.value })}
           />
 
-          <input type="number" placeholder="Vales"
+          <input
+            type="number"
+            placeholder="Vales"
             value={form.vales}
             onChange={e => setForm({ ...form, vales: e.target.value })}
           />
@@ -170,6 +200,7 @@ export default function Lancamentos() {
             <button type="submit">
               {editando ? 'Atualizar' : 'Salvar'}
             </button>
+
             {editando && (
               <button type="button" className="secondary" onClick={limpar}>
                 Cancelar
@@ -184,10 +215,14 @@ export default function Lancamentos() {
         <h2>Consulta por Período</h2>
 
         <div className="consulta">
-          <input type="date" value={dataInicio}
+          <input
+            type="date"
+            value={dataInicio}
             onChange={e => setDataInicio(e.target.value)}
           />
-          <input type="date" value={dataFim}
+          <input
+            type="date"
+            value={dataFim}
             onChange={e => setDataFim(e.target.value)}
           />
           <button onClick={consultar}>Consultar</button>
@@ -198,6 +233,7 @@ export default function Lancamentos() {
             <div className="item" key={l.id}>
               <strong>{l.Motoqueiro?.nome}</strong>
               <span>Data: {formatarData(l.data)}</span>
+
               <small>
                 Diária: R$ {l.diaria} | Taxa: R$ {l.taxa} |
                 Entregas: {l.qtd_entregas} |
@@ -207,7 +243,9 @@ export default function Lancamentos() {
 
               <div className="botoes">
                 <button onClick={() => editar(l)}>Editar</button>
-                <button className="danger" onClick={() => excluir(l.id)}>Excluir</button>
+                <button className="danger" onClick={() => excluir(l.id)}>
+                  Excluir
+                </button>
               </div>
             </div>
           ))}
